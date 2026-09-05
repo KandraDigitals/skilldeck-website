@@ -186,6 +186,11 @@ const CompanyForm: React.FC<CompanyFormProps> = ({ onClose, className = '', tena
 
     const validateForm = () => {
         if (!formData.fullName.trim()) return "Name is required";
+        if (!/^[a-zA-Z\s]+$/.test(formData.fullName.trim())) return "Name can only contain letters and spaces";
+        if (formData.fullName.trim().length < 2) return "Name must be at least 2 characters";
+        if (formData.companyName && !/^[a-zA-Z_\s]+$/.test(formData.companyName.trim())) {
+            return "Company name can only contain letters, spaces, and underscores (_)";
+        }
         if (!formData.email.trim()) return "Email is required";
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) return "Invalid email format";
         if (!formData.phone.trim()) return "Phone number is required";

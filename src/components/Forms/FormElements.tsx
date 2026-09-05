@@ -17,27 +17,27 @@ export const FormInput: React.FC<FormInputProps> = ({
     ...props
 }) => (
     <div className={containerClassName}>
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
+        <label className="block text-[11px] font-medium text-gray-700 mb-1 tracking-tight">
             {label}
-            {props.required && <span className="text-red-500 ml-1">*</span>}
+            {props.required && <span className="text-rose-500 ml-0.5">*</span>}
         </label>
         <div className="relative">
             {Icon && (
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <Icon className="h-5 w-5 text-gray-400" />
+                <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                    <Icon className="h-3.5 w-3.5 text-gray-400" />
                 </div>
             )}
             <input
-                className={`w-full ${Icon ? 'pl-11' : 'px-4'} py-3 rounded-lg border focus:ring-2 transition-all outline-none text-gray-900 text-sm bg-white hover:border-gray-300 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed
+                className={`w-full ${Icon ? 'pl-8' : 'px-3'} py-1.5 rounded-md border text-[13px] text-gray-900 bg-white hover:border-gray-300 transition-colors focus:outline-none disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed
                     ${error
-                        ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500'
-                        : 'border-gray-200 focus:ring-blue-500/20 focus:border-blue-500'
+                        ? 'border-rose-400 focus:border-rose-500 focus:ring-1 focus:ring-rose-500'
+                        : 'border-gray-200 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary'
                     } ${className}`}
                 {...props}
             />
         </div>
         {error && (
-            <p className="mt-1.5 text-xs text-red-500 font-medium">{error}</p>
+            <p className="mt-0.5 text-[11px] text-rose-500 font-medium">{error}</p>
         )}
     </div>
 );
@@ -56,21 +56,21 @@ export const FormTextArea: React.FC<FormTextAreaProps> = ({
     ...props
 }) => (
     <div className={containerClassName}>
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
+        <label className="block text-[11px] font-medium text-gray-700 mb-1 tracking-tight">
             {label}
-            {props.required && <span className="text-red-500 ml-1">*</span>}
+            {props.required && <span className="text-rose-500 ml-0.5">*</span>}
         </label>
         <textarea
-            className={`w-full px-4 py-3 rounded-lg border focus:ring-2 transition-all outline-none text-gray-900 text-sm bg-white hover:border-gray-300 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed
+            className={`w-full px-3 py-1.5 rounded-md border text-[13px] text-gray-900 bg-white hover:border-gray-300 transition-colors focus:outline-none disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed
                 ${error
-                    ? 'border-red-300 focus:ring-red-500/20 focus:border-red-500'
-                    : 'border-gray-200 focus:ring-blue-500/20 focus:border-blue-500'
+                    ? 'border-rose-400 focus:border-rose-500 focus:ring-1 focus:ring-rose-500'
+                    : 'border-gray-200 focus:border-brand-primary focus:ring-1 focus:ring-brand-primary'
                 } ${className}`}
-            rows={4}
+            rows={3}
             {...props}
         />
         {error && (
-            <p className="mt-1.5 text-xs text-red-500 font-medium">{error}</p>
+            <p className="mt-0.5 text-[11px] text-rose-500 font-medium">{error}</p>
         )}
     </div>
 );
@@ -88,20 +88,17 @@ export const FormSelect: React.FC<FormSelectProps> = ({
     ...props
 }) => (
     <div className={containerClassName}>
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
+        <label className="block text-[11px] font-medium text-gray-700 mb-1 tracking-tight">
             {label}
         </label>
         <div className="relative">
             <select
-                className={`w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 
-                    focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none 
-                    text-gray-900 text-sm appearance-none bg-white hover:border-gray-300 
-                    disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed ${className}`}
+                className={`w-full px-3 py-1.5 rounded-md border border-gray-200 focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-colors text-[13px] text-gray-900 appearance-none bg-white hover:border-gray-300 disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed ${className}`}
                 {...props}
             >
                 {children}
             </select>
-            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
         </div>
     </div>
 );

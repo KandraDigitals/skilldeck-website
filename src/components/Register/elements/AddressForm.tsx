@@ -174,31 +174,28 @@ export const AddressForm: React.FC<AddressFormProps> = ({
     };
 
     return (
-        <div className="bg-white rounded-lg p-6 md:p-8 border border-gray-100">
+        <div className={title ? "bg-gray-50/70 rounded-xl p-3 sm:p-3.5 border border-gray-200" : ""}>
             {title && (
-                <div className="flex items-center gap-3 mb-6">
-                    <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${iconBgColor} flex items-center justify-center`}>
-                        <Icon className="w-5 h-5 text-white" />
-                    </div>
+                <div className="flex items-center gap-2 mb-2.5 pb-2 border-b border-gray-200">
+                    <Icon className="w-3.5 h-3.5 text-gray-500" />
                     <div>
-                        <h2 className="text-lg font-bold text-gray-900">{title}</h2>
-                        <p className="text-sm text-gray-500">Where is your organization headquartered?</p>
+                        <h3 className="text-xs sm:text-sm font-semibold text-gray-900">{title}</h3>
                     </div>
                 </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div className="md:col-span-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+                <div className="sm:col-span-2">
                     <FormInput
                         label="Street Address"
                         value={data.street}
                         onChange={(e) => onInputChange(e, 'street')}
                         required
-                        className={getError('street') ? '!border-red-400 !ring-red-500/20 focus:!border-red-500' : ''}
+                        className={getError('street') ? '!border-rose-400 !ring-rose-500/10 focus:!border-rose-500' : ''}
                     />
                     {getError('street') && (
-                        <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
-                            <AlertCircle className="w-3 h-3" />
+                        <p className="mt-0.5 text-[11px] text-rose-500 font-medium flex items-center gap-1">
+                            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                             {getError('street')}
                         </p>
                     )}
@@ -215,8 +212,8 @@ export const AddressForm: React.FC<AddressFormProps> = ({
                         required
                     />
                     {getError('country') && (
-                        <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
-                            <AlertCircle className="w-3 h-3" />
+                        <p className="mt-0.5 text-[11px] text-rose-500 font-medium flex items-center gap-1">
+                            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                             {getError('country')}
                         </p>
                     )}
@@ -235,8 +232,8 @@ export const AddressForm: React.FC<AddressFormProps> = ({
                         placeholder={!data.country ? 'Select country first' : 'Select...'}
                     />
                     {getError('state') && (
-                        <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
-                            <AlertCircle className="w-3 h-3" />
+                        <p className="mt-0.5 text-[11px] text-rose-500 font-medium flex items-center gap-1">
+                            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                             {getError('state')}
                         </p>
                     )}
@@ -261,11 +258,11 @@ export const AddressForm: React.FC<AddressFormProps> = ({
                         value={data.postalCode}
                         onChange={(e) => onInputChange(e, 'postalCode')}
                         required
-                        className={getError('postalCode') ? '!border-red-400 !ring-red-500/20 focus:!border-red-500' : ''}
+                        className={getError('postalCode') ? '!border-rose-400 !ring-rose-500/10 focus:!border-rose-500' : ''}
                     />
                     {getError('postalCode') && (
-                        <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
-                            <AlertCircle className="w-3 h-3" />
+                        <p className="mt-0.5 text-[11px] text-rose-500 font-medium flex items-center gap-1">
+                            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                             {getError('postalCode')}
                         </p>
                     )}

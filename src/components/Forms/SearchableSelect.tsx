@@ -203,8 +203,8 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
 
     return (
         <div className={`relative ${containerClassName}`} ref={containerRef}>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-                {label} {required && <span className="text-red-500">*</span>}
+            <label className="block text-[11px] font-medium text-gray-700 mb-1 tracking-tight">
+                {label} {required && <span className="text-rose-500 ml-0.5">*</span>}
             </label>
 
             {/* Trigger Button */}
@@ -216,11 +216,10 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
                 aria-controls={isOpen ? listboxId : undefined}
                 aria-activedescendant={highlightedIndex >= 0 ? getOptionId(highlightedIndex) : undefined}
                 tabIndex={disabled ? -1 : 0}
-                className={`
-                    w-full px-4 py-3 rounded-lg border border-gray-200 bg-white 
-                    focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 
-                    transition-all outline-none text-sm flex items-center justify-between cursor-pointer
-                    hover:border-gray-300
+                    className={`
+                    w-full px-3 py-1.5 rounded-md border bg-white 
+                    transition-colors outline-none text-[13px] flex items-center justify-between cursor-pointer
+                    ${isOpen ? 'border-brand-primary ring-1 ring-brand-primary' : 'border-gray-200 hover:border-gray-300'}
                     ${disabled ? 'opacity-50 cursor-not-allowed bg-gray-50' : ''}
                     ${className}
                 `}
@@ -235,27 +234,27 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
                 }}
                 onKeyDown={handleTriggerKeyDown}
             >
-                <span className={!selectedOption ? 'text-gray-400' : 'text-gray-900'}>
+                <span className={!selectedOption ? 'text-gray-400 text-[13px]' : 'text-gray-900 font-medium text-[13px] truncate'}>
                     {selectedOption?.name || placeholder}
                 </span>
-                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-3.5 h-3.5 text-gray-400 shrink-0 transition-transform duration-150 ${isOpen ? 'rotate-180 text-brand-primary' : ''}`} />
             </div>
 
             {/* Dropdown */}
             {isOpen && !disabled && (
                 <div
-                    className="absolute z-50 mt-1 w-full bg-white rounded-lg border border-gray-200 shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-100"
+                    className="absolute z-50 mt-1 w-full bg-white rounded-lg border border-gray-200 shadow-md overflow-hidden animate-in fade-in zoom-in-95 duration-100"
                     role="presentation"
                 >
                     {/* Search Input */}
-                    <div className="p-2 border-b border-gray-100">
+                    <div className="p-1 border-b border-gray-100 bg-white">
                         <input
                             ref={inputRef}
                             type="text"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             onKeyDown={handleSearchKeyDown}
-                            className="w-full px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:border-blue-500 focus:bg-white transition-colors"
+                            className="w-full px-2.5 py-1 text-xs bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:border-brand-primary focus:bg-white text-gray-800 placeholder:text-gray-400 transition-colors"
                             placeholder="Type to search..."
                             role="searchbox"
                             aria-label={`Search ${label}`}
@@ -267,14 +266,14 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
                     </div>
 
                     {/* Options List */}
-                    <div className="max-h-60 overflow-y-auto scroll-smooth">
+                    <div className="max-h-48 overflow-y-auto scroll-smooth p-1 custom-scrollbar">
                         {loading ? (
-                            <div className="flex items-center justify-center py-4 text-gray-500 text-sm gap-2">
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                                Loading...
+                            <div className="flex items-center justify-center py-3 text-gray-400 text-xs gap-2">
+                                <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-primary" />
+                                <span>Loading...</span>
                             </div>
                         ) : options.length > 0 ? (
-                            <ul ref={listRef} role="listbox" id={listboxId} aria-label={label}>
+                            <ul ref={listRef} role="listbox" id={listboxId} aria-label={label} className="space-y-0.5">
                                 {options.map((option, index) => {
                                     const isSelected = option.id.toString() === value.toString();
                                     const isHighlighted = index === highlightedIndex;
@@ -288,47 +287,29 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
                                             onClick={() => handleSelect(option)}
                                             onMouseEnter={() => setHighlightedIndex(index)}
                                             className={`
-                                                px-4 py-2.5 text-sm cursor-pointer transition-colors flex items-center justify-between
+                                                px-2.5 py-1.5 rounded-md text-[13px] cursor-pointer transition-colors flex items-center justify-between
                                                 ${isHighlighted
-                                                    ? 'bg-blue-50 text-blue-700'
+                                                    ? 'bg-gray-50 text-gray-900'
                                                     : isSelected
-                                                        ? 'bg-blue-50/50 text-blue-600 font-medium'
+                                                        ? 'bg-brand-primary/10 text-brand-primary font-medium'
                                                         : 'text-gray-700 hover:bg-gray-50'
                                                 }
                                             `}
                                         >
-                                            <span>{option.name}</span>
-                                            {isSelected && <Check className="w-4 h-4 shrink-0" />}
+                                            <span className="truncate">{option.name}</span>
+                                            {isSelected && (
+                                                <Check className="w-3.5 h-3.5 text-brand-primary shrink-0 ml-1.5" />
+                                            )}
                                         </li>
                                     );
                                 })}
                             </ul>
                         ) : (
-                            <div className="py-4 text-center text-gray-400 text-sm">
+                            <div className="py-3 text-center text-gray-400 text-xs">
                                 No results found
                             </div>
                         )}
                     </div>
-
-                    {/* Keyboard hint */}
-                    {options.length > 0 && (
-                        <div className="px-3 py-1.5 border-t border-gray-100 bg-gray-50/50">
-                            <p className="text-[10px] text-gray-400 flex items-center gap-2">
-                                <span className="flex items-center gap-0.5">
-                                    <kbd className="px-1 py-0.5 rounded bg-gray-200 text-gray-500 font-mono text-[9px]">↑↓</kbd>
-                                    navigate
-                                </span>
-                                <span className="flex items-center gap-0.5">
-                                    <kbd className="px-1 py-0.5 rounded bg-gray-200 text-gray-500 font-mono text-[9px]">↵</kbd>
-                                    select
-                                </span>
-                                <span className="flex items-center gap-0.5">
-                                    <kbd className="px-1 py-0.5 rounded bg-gray-200 text-gray-500 font-mono text-[9px]">esc</kbd>
-                                    close
-                                </span>
-                            </p>
-                        </div>
-                    )}
                 </div>
             )}
         </div>

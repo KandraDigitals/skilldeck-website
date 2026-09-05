@@ -34,42 +34,54 @@ export async function POST(request: NextRequest) {
     const purgeUrls: string[] = [...urls];
 
     // ── Adapt every branch below to match backend cacheInvalidation types ──
-    if ((type === 'course' || type === 'courses' || type === 'schedule' || type === 'schedules') && slug) {
-        // Granular purge: only this specific course and its schedule
-        revalidateTag(`course-${slug}`, 'max');
-        revalidateTag(`schedules-${slug}`, 'max');
-        if (categorySlug) {
-            revalidatePath(`/${categorySlug}/${slug}`);
-            purgeUrls.push(`${SITE_URL}/${categorySlug}/${slug}`);
+    if (type === 'course' || type === 'courses' || type === 'schedule' || type === 'schedules') {
+        if (slug) {
+            // Granular purge for specific course and its schedule
+            revalidateTag(`course-${slug}`, 'max');
+            revalidateTag(`schedules-${slug}`, 'max');
+            if (categorySlug) {
+                revalidatePath(`/${categorySlug}/${slug}`);
+                revalidatePath(`/${categorySlug}`);
+                purgeUrls.push(`${SITE_URL}/${categorySlug}/${slug}`, `${SITE_URL}/${categorySlug}`);
+            }
+            revalidatePath(`/schedules/${slug}`);
+            purgeUrls.push(`${SITE_URL}/schedules/${slug}`);
         }
-        revalidatePath(`/schedules/${slug}`);
-        purgeUrls.push(`${SITE_URL}/schedules/${slug}`);
-    } else if (type === 'course' || type === 'courses') {
+        // Invalidate global course tags and layout so Navbar and listings update immediately
         revalidateTag('courses', 'max');
+        revalidateTag('categories', 'max');
+        revalidateTag('schedules', 'max');
         revalidatePath('/', 'layout');
+        purgeUrls.push(`${SITE_URL}/`, `${SITE_URL}/schedules`);
     } else if (type === 'category' || type === 'categories') {
         if (slug) {
             revalidateTag(`category-${slug}`, 'max');
             revalidatePath(`/${slug}`);
             purgeUrls.push(`${SITE_URL}/${slug}`);
-        } else {
-            revalidateTag('categories', 'max');
-            revalidateTag('courses', 'max');
         }
+        revalidateTag('categories', 'max');
+        revalidateTag('courses', 'max');
+        revalidatePath('/', 'layout');
+        purgeUrls.push(`${SITE_URL}/`);
     } else if (type === 'service' || type === 'services') {
         if (slug) {
             revalidateTag(`service-${slug}`, 'max');
             revalidatePath(`/services/${slug}`);
             purgeUrls.push(`${SITE_URL}/services/${slug}`);
-        } else {
-            revalidateTag('services', 'max');
-            revalidateTag('service-categories', 'max');
-            revalidatePath('/');
         }
+        // Invalidate global service tags and layout so Navbar updates immediately
+        revalidateTag('services', 'max');
+        revalidateTag('service-categories', 'max');
+        revalidatePath('/', 'layout');
+        purgeUrls.push(`${SITE_URL}/`, `${SITE_URL}/services`);
     } else if (type === 'service-category' || type === 'service-categories') {
+        if (slug) {
+            revalidateTag(`service-category-${slug}`, 'max');
+        }
         revalidateTag('service-categories', 'max');
         revalidateTag('services', 'max');
-        revalidatePath('/');
+        revalidatePath('/', 'layout');
+        purgeUrls.push(`${SITE_URL}/`);
     } else if (type === 'blog' || type === 'blogs') {
         if (slug) {
             revalidateTag(`blog-${slug}`, 'max');

@@ -1,6 +1,9 @@
-import { Check, LucideIcon } from 'lucide-react';
-import React from 'react';
-import { FieldErrors } from '../hooks/useRegisterForm';
+"use client";
+
+import React from "react";
+import { Check, LucideIcon } from "lucide-react";
+import { motion } from "framer-motion";
+import { FieldErrors } from "../hooks/useRegisterForm";
 
 interface Step {
     number: number;
@@ -13,46 +16,84 @@ interface FormStepperProps {
     currentStep: number;
     fieldErrors: FieldErrors;
     stepErrorCount: (step: number, fieldErrors: FieldErrors) => number;
+    onStepClick?: (stepNumber: number) => void;
 }
 
 export const FormStepper: React.FC<FormStepperProps> = ({
     steps,
     currentStep,
     fieldErrors,
-    stepErrorCount
+    stepErrorCount,
+    onStepClick,
 }) => {
     return (
-        <div className="mb-6 bg-white rounded-lg p-4 border border-gray-100">
-            <div className="flex items-center justify-center gap-0">
+        <div className="w-full mb-3 sm:mb-4">
+            {/* Step Nodes Connected by Inline Progress Lines */}
+            <div className="flex items-start justify-between relative">
                 {steps.map((step, idx) => {
                     const isActive = step.number === currentStep;
                     const isCompleted = step.number < currentStep;
+                    const errorCount = stepErrorCount(step.number, fieldErrors);
+                    const StepIcon = step.icon;
+                    const isLast = idx === steps.length - 1;
 
                     return (
                         <React.Fragment key={step.number}>
-                            <div className="flex items-center gap-2.5">
-                                <div className={`
-                                    w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 text-sm font-bold
-                                    ${isActive
-                                        ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white scale-110'
-                                        : isCompleted
-                                            ? 'bg-green-500 text-white'
-                                            : 'bg-gray-100 text-gray-400'
+                            {/* Step Node */}
+                            <div
+                                onClick={() => {
+                                    if (isCompleted && onStepClick) {
+                                        onStepClick(step.number);
                                     }
-                                `}>
-                                    {isCompleted ? <Check className="w-4.5 h-4.5" /> : step.number}
+                                }}
+                                className={`flex flex-col items-center group select-none shrink-0 relative z-10 ${
+                                    isCompleted ? "cursor-pointer" : "cursor-default"
+                                }`}
+                            >
+                                <div
+                                    className={`
+                                        w-7 h-7 rounded-md flex items-center justify-center transition-all duration-200
+                                        ${
+                                            isActive
+                                                ? "bg-brand-primary text-white font-medium shadow-xs ring-2 ring-brand-primary/20"
+                                                : isCompleted
+                                                ? "bg-brand-primary/10 text-brand-primary"
+                                                : errorCount > 0
+                                                ? "bg-rose-50 border border-rose-300 text-rose-500"
+                                                : "bg-gray-100 text-gray-400 group-hover:bg-gray-200/70"
+                                        }
+                                    `}
+                                >
+                                    {isCompleted ? (
+                                        <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                                    ) : (
+                                        <StepIcon className="w-3.5 h-3.5" />
+                                    )}
                                 </div>
-                                <span className={`text-sm font-semibold hidden sm:inline transition-colors duration-300 ${isActive ? 'text-gray-900' : isCompleted ? 'text-green-600' : 'text-gray-400'
-                                    }`}>
+
+                                <span
+                                    className={`mt-1 text-[11px] font-medium tracking-tight transition-colors hidden sm:block ${
+                                        isActive
+                                            ? "text-brand-primary font-medium"
+                                            : isCompleted
+                                            ? "text-gray-700"
+                                            : "text-gray-400"
+                                    }`}
+                                >
                                     {step.title}
                                 </span>
                             </div>
-                            {idx < steps.length - 1 && (
-                                <div className="flex-1 max-w-[80px] mx-4">
-                                    <div className="h-[2px] rounded-full bg-gray-100 overflow-hidden">
+
+                            {/* Connecting Progress Line Between Step Icons */}
+                            {!isLast && (
+                                <div className="flex-1 mx-1.5 sm:mx-2.5 h-7 flex items-center">
+                                    <div className="w-full bg-gray-100 h-[2px] rounded-full overflow-hidden">
                                         <div
-                                            className={`h-full rounded-full transition-all duration-500 ${isCompleted ? 'bg-green-500 w-full' : 'bg-gray-100 w-0'
-                                                }`}
+                                            className={`h-full transition-all duration-300 ${
+                                                step.number < currentStep
+                                                    ? "bg-brand-primary w-full"
+                                                    : "w-0"
+                                            }`}
                                         />
                                     </div>
                                 </div>

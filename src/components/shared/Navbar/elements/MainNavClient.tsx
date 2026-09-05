@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
-import { HoveredLink, MenuItem, Menu as NavMenu, ProductItem } from "@/components/ui/navbar-menu";
+import { HoveredLink, MenuItem, Menu as NavMenu } from "@/components/ui/navbar-menu";
 import { cn } from "@/lib/utils";
-import { ArrowRight, Layers, Layout, Menu, ShoppingCart } from "lucide-react";
+import { ArrowRight, Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

@@ -79,6 +79,7 @@ export const useRegisterForm = () => {
     });
 
     const [sameAsAddress, setSameAsAddress] = useState(true);
+    const [sameAsWorkEmail, setSameAsWorkEmail] = useState(true);
     const [useRegistrationContact, setUseRegistrationContact] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
@@ -103,10 +104,27 @@ export const useRegisterForm = () => {
     // Handlers
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData(prev => {
+            const updated = { ...prev, [name]: value };
+            if (name === 'ownerEmail' && sameAsWorkEmail) {
+                updated.billingEmail = value;
+            }
+            return updated;
+        });
         // Clear error for this field when user types
         if (fieldErrors[name]) {
             clearFieldError(name);
+        }
+        if (name === 'ownerEmail' && sameAsWorkEmail && fieldErrors.billingEmail) {
+            clearFieldError('billingEmail');
+        }
+    };
+
+    const toggleSameAsWorkEmail = (isChecked: boolean) => {
+        setSameAsWorkEmail(isChecked);
+        if (isChecked) {
+            setFormData(prev => ({ ...prev, billingEmail: prev.ownerEmail }));
+            clearFieldError('billingEmail');
         }
     };
 
@@ -207,6 +225,7 @@ export const useRegisterForm = () => {
         formData,
         setFormData, // Exposed for flexibility if needed, but prefer specific updaters
         sameAsAddress,
+        sameAsWorkEmail,
         useRegistrationContact,
         isSubmitting,
         setIsSubmitting,
@@ -217,6 +236,7 @@ export const useRegisterForm = () => {
         handleInputChange,
         handleAddressInputChange,
         toggleSameAsAddress,
+        toggleSameAsWorkEmail,
         toggleUseRegistrationContact,
         updateAddressField,
         updateBillingField,
