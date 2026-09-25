@@ -23,7 +23,7 @@ import ServiceBusiness from "@/components/services/ServiceBusiness";
 import ServiceFaq from "@/components/services/ServiceFaq";
 import { ServiceIdentityProvider } from "@/components/services/ServiceIdentityContext";
 import ServicesGrid from "@/components/Home/elements/ServicesGrid";
-import ServiceChapterDots, { ServiceChapterItem } from "@/components/services/ServiceChapterDots";
+import CourseSectionsNav, { SectionLink } from "@/components/category/courses/overview/CourseSectionsNav";
 import PricingSection from "@/components/Pricing/PricingSection";
 import ServicePatternLinks from "@/components/services/ServicePatternLinks";
 
@@ -56,8 +56,15 @@ async function getServiceData(slug: string, pageUrl?: string): Promise<ServiceDa
             next: { tags: [`service-${slug}`, 'services'] }
         });
 
-        if (!response.ok) {
+        // Only a 404/410 means the service is genuinely gone; every other
+        // failure is an outage. Returning null for those cached a permanent
+        // 404 for a live page, because `revalidate = false` never retries.
+        if (response.status === 404 || response.status === 410) {
             return null;
+        }
+
+        if (!response.ok) {
+            throw new Error(`[service] /services/${slug} responded ${response.status}`);
         }
 
         const cacheStatus = response.headers.get('x-cache');
@@ -75,7 +82,8 @@ async function getServiceData(slug: string, pageUrl?: string): Promise<ServiceDa
         return json.data || json;
     } catch (error) {
         console.error("Error fetching service:", error);
-        return null;
+        // Network failures and the 15s fetch timeout land here.
+        throw error;
     }
 }
 
@@ -202,7 +210,7 @@ export default async function ServicePage({ params }: { params: Promise<ServiceP
         };
     }
 
-    // Section presence — drives the chapter rail on the right edge
+    // Section presence — drives the floating sections nav
     const hasWhy = Boolean(service.whyservice?.title) || (service.whyservice?.points || []).length > 0;
     const hasBenefits = (service.benefits?.points || []).length > 0;
     const hasApproach =
@@ -219,7 +227,7 @@ export default async function ServicePage({ params }: { params: Promise<ServiceP
     const hasFaq = (service.faqs?.accordions || []).some((f) => f?.title);
     const otherServices = allServices.filter((s) => s.slug && s.slug !== slug);
 
-    const chapters: ServiceChapterItem[] = [
+    const chapters: SectionLink[] = [
         ...(hasWhy ? [{ id: "why", label: "The Reality" }] : []),
         ...(hasBenefits ? [{ id: "benefits", label: "The Outcome" }] : []),
         ...(hasApproach ? [{ id: "approach", label: "How We Work" }] : []),
@@ -269,9 +277,11 @@ export default async function ServicePage({ params }: { params: Promise<ServiceP
                     clientsCount={service.servicecard?.clients}
                 />
 
-                {/* Chapter rail */}
-                <ServiceChapterDots items={chapters} />
+                {/* Floating sections nav — same one the course pages use. It shows
+                    while #service-sections is on screen. */}
+                <CourseSectionsNav sections={chapters} regionId="service-sections" />
 
+                <div id="service-sections">
                 {/* 01 — Why Choose Us */}
                 <ServiceWhyChooseUs
                     whyservice={service.whyservice}
@@ -314,6 +324,7 @@ export default async function ServicePage({ params }: { params: Promise<ServiceP
 
                 {/* 08 — FAQ Accordion Section */}
                 <ServiceFaq faqs={service.faqs} serviceName={service.name} />
+                </div>
 
                 {/* Bottom and Internal Sections */}
                 {(service.bottomSection?.value || service.internalSection?.value) && (
