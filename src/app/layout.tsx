@@ -131,7 +131,8 @@ export default function RootLayout({
       <head>
         <link rel="dns-prefetch" href="https://api.skilldeck.net" />
         <link rel="dns-prefetch" href="https://api64.ipify.org" />
-              <link rel="preconnect" href={RICH_TEXT_CDN_ORIGIN} crossOrigin="" />
+        {/*editor  */}
+        <link rel="preconnect" href={RICH_TEXT_CDN_ORIGIN} crossOrigin="" />
         <link rel="stylesheet" href={RICH_TEXT_CSS} />
         <script
           type="application/ld+json"
