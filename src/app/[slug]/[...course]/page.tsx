@@ -218,17 +218,25 @@ export default async function CoursePage({
         }
     };
 
-    const productSchema = {
-        "@context": "https://schema.org",
-        "@type": "Product",
-        "name": course.course_title,
-        "description": course.metaDescription || course.course_title,
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": course.aggregateRating?.ratingValue || 4.5,
-            "reviewCount": course.aggregateRating?.reviewCount || 2700
+    // Only real ratings from the backend. The old 4.5 / 2700 fallback stamped the
+    // same invented rating on every course and city page — fabricated review
+    // markup, which Google treats as spammy structured data. A Product with no
+    // rating, offer or review is invalid on its own, so it is skipped entirely.
+    const ratingValue = Number(course.aggregateRating?.ratingValue);
+    const reviewCount = Number(course.aggregateRating?.reviewCount);
+    const productSchema = ratingValue > 0 && reviewCount > 0
+        ? {
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": course.course_title,
+            "description": course.metaDescription || course.course_title,
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": ratingValue,
+                "reviewCount": reviewCount
+            }
         }
-    };
+        : null;
 
     let faqSchema = null;
     if (course.faqs && course.faqs.length > 0) {
@@ -304,10 +312,12 @@ export default async function CoursePage({
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(courseSchema) }}
                 />
-                <script
-                    type="application/ld+json"
-                    dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
-                />
+                {productSchema && (
+                    <script
+                        type="application/ld+json"
+                        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+                    />
+                )}
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
