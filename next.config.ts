@@ -98,9 +98,9 @@ const nextConfig: NextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256],
   },
   experimental: {
-    // The build prerenders every course page against a rate-limited backend.
-    // Fewer pages in flight per worker keeps it under the limit, and a page
-    // that still fails gets retried instead of failing the whole build.
+    // Keep worker count and per-worker concurrency balanced so 30-core Turbo
+    // build machines don't burst past the backend rate limit while staying fast.
+    cpus: 2,
     staticGenerationMaxConcurrency: 2,
     staticGenerationRetryCount: 3,
     optimizePackageImports: [
